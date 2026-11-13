@@ -6,27 +6,6 @@
 typedef struct Song Song;
 typedef struct Artist Artist; // had to do this because both artist and song use each other and the compiler needs to
 // know about both of them before it can compile either one
-struct Artist
-{
-    char *name;     // owned copy of the nsame;
-                    // unique within one MusicDB
-    size_t n_songs; // number of songs by this artist
-    size_t cap;     // capacity of the songs array
-    Song **songs;   // owbed array of (non-owning) pointers to the songs
-};
-
-struct Song
-{
-    float rating;
-    const Artist *artist;
-    int year;
-    char *title;
-    unsigned long num_rated;
-    unsigned int id;
-};
-
-typedef struct Song Song;
-typedef struct Artist Artist;
 typedef struct MusicDB MusicDB; /* you define this one, in musicdb.c */
 
 typedef int (*song_pred)(const Song *s, const void *key); /* non-zero = match */
@@ -54,4 +33,23 @@ void db_sort(MusicDB *db, int card);
 
 size_t db_count_decade(const MusicDB *db, int start, const Song **best);
 const Artist *db_top_artist(const MusicDB *db);
+
+struct Artist
+{
+    char *name;     // owned copy of the nsame;
+                    // unique within one MusicDB
+    size_t n_songs; // number of songs by this artist
+    size_t cap;     // capacity of the songs array
+    Song **songs;   // owbed array of (non-owning) pointers to the songs
+};
+
+struct Song
+{
+    float rating;
+    const Artist *artist;
+    int year;
+    char *title;
+    unsigned long num_rated;
+    unsigned int id;
+};
 #endif
