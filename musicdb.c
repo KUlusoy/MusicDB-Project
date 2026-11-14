@@ -236,6 +236,94 @@ int db_push(MusicDB *db, const char *title, const char *artist,
     }
     if (found == 0)
     {
-        return -1;
+        Artist *newArtist = malloc(sizeof(Artist));
+        newArtist->name = malloc(strlen(artist) + 1);
+        strcpy(newArtist->name, artist);
+        newArtist->n_songs = 0;
+        newArtist->songs = NULL;
+        db->artists = realloc(db->artists, (db->n_artists + 1) * sizeof(Artist));
+        db->artists[db->n_artists] = newArtist;
+        newArtist->n_songs = 0;
+        newArtist->songs = NULL;
+        ptr = newArtist;
+        db->n_artists++;
     }
+    Song *newSong = malloc(sizeof(Song));
+    newSong->title = malloc(strlen(title) + 1);
+    strcpy(newSong->title, title);
+    /*
+        newSong->rating = rating;
+    newSong->year = year;
+    newSong->num_rated = num_rated;
+    newSong->artist = ptr;
+    newSong->id = db->n_songs;
+
+    db->songs = realloc(db->songs, (db->n_songs + 1) * sizeof(Song *));
+    db->songs[db->n_songs] = newSong;
+    db->n_songs++;
+
+    ptr->songs = realloc(ptr->songs, (ptr->n_songs + 1) * sizeof(Song *));
+    ptr->songs[ptr->n_songs] = newSong;
+    ptr->n_songs++;
+
+    return 0;
+
+
+
+    */
+}
+void db_disp(const MusicDB *db, FILE *out, size_t lim)
+{
+    fprintf(out, "%-35s %-25s %-5s %-8s %s\n", "Song Title", "Artist", "Year", "Rating", "People Rated");
+
+    if (lim != 0 && lim < db->n_songs)
+    {
+
+        for (int i = 0; i < lim; i++)
+        {
+            fprintf(out, "%-35s %-25s %-5d %-8.2f %lu\n", db->songs[i]->title, db->songs[i]->artist->name, db->songs[i]->year, db->songs[i]->rating, db->songs[i]->num_rated);
+        }
+    }
+    if (lim == 0 || lim > db->n_songs)
+    {
+        for (int i = 0; i < db->n_songs; i++)
+        {
+            fprintf(out, "%-35s %-25s %-5d %-8.2f %lu\n", db->songs[i]->title, db->songs[i]->artist->name, db->songs[i]->year, db->songs[i]->rating, db->songs[i]->num_rated);
+        }
+    }
+}
+
+size_t db_search(const MusicDB *db, song_pred pred, const void *key, const Song ***out)
+{
+    int songCount = 0;
+    for (int i = 0; i < db->n_songs; i++)
+    {
+        if (pred(db->songs[i], key) != 0)
+        {
+            songCount++;
+        }
+    }
+    return songCount;
+}
+
+size_t db_count_decade(const MusicDB *db, int start, const Song **best)
+{
+    int songCount = 0;
+    int largestNumRating = 0;
+    for (int i = 0; i < db->n_songs; i++)
+    {
+        if (db->songs[i]->year >= start && db->songs[i]->year <= start + 9)
+        {
+            songCount++;
+            if (*best != NULL)
+            {
+                if (db->songs[i]->num_rated > largestNumRating)
+                {
+                    largestNumRating = db->songs[i]->num_rated;
+                    *best = db->songs[i];
+                }
+            }
+        }
+    }
+    return songCount;
 }
