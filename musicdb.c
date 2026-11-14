@@ -210,11 +210,12 @@ const Song *db_get(const MusicDB *db, size_t i)
         return db->songs[i];
     }
 }
-int found = 0;
+
 int db_push(MusicDB *db, const char *title, const char *artist,
             double rating, int year, unsigned long num_rated)
 {
-    if (db == NULL || title == NULL || artist == NULL || rating == 0.0 || year == 0 || num_rated == 0)
+    int found = 0;
+    if (db == NULL || title == NULL || artist == NULL)
     {
         return -1;
     }
