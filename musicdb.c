@@ -310,12 +310,16 @@ size_t db_count_decade(const MusicDB *db, int start, const Song **best)
 {
     int songCount = 0;
     int largestNumRating = 0;
+    if (best == NULL)
+    {
+        *best = NULL;
+    }
     for (int i = 0; i < db->n_songs; i++)
     {
         if (db->songs[i]->year >= start && db->songs[i]->year <= start + 9)
         {
             songCount++;
-            if (*best != NULL)
+            if (best != NULL)
             {
                 if (db->songs[i]->num_rated > largestNumRating)
                 {
@@ -326,4 +330,33 @@ size_t db_count_decade(const MusicDB *db, int start, const Song **best)
         }
     }
     return songCount;
+}
+const Artist *db_top_artist(const MusicDB *db)
+{
+    int mostSongs = 0;
+    int songCount = 0;
+    Artist *top;
+    if (db == NULL || db->n_artists == 0 || db->n_songs == 0)
+    {
+        return NULL;
+    }
+    for (int i = 0; i < db->n_artists; i++)
+    {
+        songCount = db->artists[i]->n_songs;
+        if (songCount > mostSongs)
+        {
+            mostSongs = songCount;
+            top = db->artists[i];
+        }
+        else if (songCount == mostSongs)
+        {
+            if (strcmp(db->artists[i]->name, top->name) < 0)
+            {
+                top = db->artists[i];
+            }
+        }
+        songCount = 0;
+    }
+
+    return top;
 }
