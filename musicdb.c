@@ -33,8 +33,6 @@ void db_destroy(MusicDB *db)
 {
     free(db->songs);
     free(db->artists);
-    free(db->n_songs);
-    free(db->n_artists);
     free(db);
 }
 
@@ -284,7 +282,7 @@ void db_disp(const MusicDB *db, FILE *out, size_t lim)
             fprintf(out, "%-35s %-25s %-5d %-8.2f %lu\n", db->songs[i]->title, db->songs[i]->artist->name, db->songs[i]->year, db->songs[i]->rating, db->songs[i]->num_rated);
         }
     }
-    if (lim == 0 || lim > db->n_songs)
+    if (lim == 0 || lim >= db->n_songs)
     {
         for (int i = 0; i < db->n_songs; i++)
         {
@@ -310,7 +308,7 @@ size_t db_count_decade(const MusicDB *db, int start, const Song **best)
 {
     int songCount = 0;
     int largestNumRating = 0;
-    if (best == NULL)
+    if (best != NULL)
     {
         *best = NULL;
     }
