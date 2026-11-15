@@ -16,6 +16,6 @@ int main()
     int L = (a + b) % 4;
     // displays
     printf("ENEB340 REPORT\n");
-    printf("card: L=%d, D= %d, T= %d, S =  %d\n", L, D, T, S);
+    printf("card: L=%d D=%d T=%d S=%d\n", L, D, T, S);
     return 0;
 }
