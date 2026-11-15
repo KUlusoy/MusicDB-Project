@@ -254,10 +254,13 @@ int db_push(MusicDB *db, const char *title, const char *artist,
     newSong->year = year;
     newSong->num_rated = num_rated;
     newSong->artist = ptr;
+    newSong->id = db->n_songs;
 
     db->songs = realloc(db->songs, (db->n_songs + 1) * sizeof(Song *));
     db->songs[db->n_songs] = newSong;
     db->n_songs++;
+    ptr->songs[ptr->n_songs] = newSong;
+    ptr->n_songs++;
 
     return 0;
 }
