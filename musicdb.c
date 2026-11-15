@@ -249,26 +249,17 @@ int db_push(MusicDB *db, const char *title, const char *artist,
     Song *newSong = malloc(sizeof(Song));
     newSong->title = malloc(strlen(title) + 1);
     strcpy(newSong->title, title);
-    /*
-        newSong->rating = rating;
+
+    newSong->rating = rating;
     newSong->year = year;
     newSong->num_rated = num_rated;
     newSong->artist = ptr;
-    newSong->id = db->n_songs;
 
     db->songs = realloc(db->songs, (db->n_songs + 1) * sizeof(Song *));
     db->songs[db->n_songs] = newSong;
     db->n_songs++;
 
-    ptr->songs = realloc(ptr->songs, (ptr->n_songs + 1) * sizeof(Song *));
-    ptr->songs[ptr->n_songs] = newSong;
-    ptr->n_songs++;
-
     return 0;
-
-
-
-    */
 }
 void db_disp(const MusicDB *db, FILE *out, size_t lim)
 {
@@ -357,4 +348,77 @@ const Artist *db_top_artist(const MusicDB *db)
     }
 
     return top;
+}
+
+void db_sort(MusicDB *db, int card)
+{
+    int count = db->n_songs;
+    Song *temp;
+
+    switch (card)
+    {
+    case 0:
+        for (int i = 0; i < count - 1; i++)
+        {
+            for (int j = i + 1; j < count; j++)
+            {
+                if (db->songs[j]->rating > db->songs[i]->rating)
+                {
+                    temp = db->songs[j];
+                    db->songs[j] = db->songs[i];
+                    db->songs[i] = temp;
+                }
+            }
+        }
+
+        break;
+    case 1:
+        for (int i = 0; i < count - 1; i++)
+        {
+            for (int j = i + 1; j < count; j++)
+            {
+                if (db->songs[j]->year < db->songs[i]->year)
+                {
+                    temp = db->songs[j];
+                    db->songs[j] = db->songs[i];
+                    db->songs[i] = temp;
+                }
+            }
+        }
+
+        break;
+    case 2:
+        for (int j = 0; j < count - 1; j++)
+        {
+            for (int i = j + 1; i < count; i++)
+            {
+                if (strcmp(db->songs[i]->artist->name, db->songs[j]->artist->name) < 0)
+                {
+
+                    temp = db->songs[i];
+                    db->songs[i] = db->songs[j];
+                    db->songs[j] = temp;
+                }
+            }
+        }
+
+        break;
+    case 3:
+        for (int j = 0; j < count - 1; j++)
+        {
+            for (int i = j + 1; i < count; i++)
+            {
+                if (db->songs[i]->num_rated > db->songs[j]->num_rated)
+                {
+                    temp = db->songs[i];
+                    db->songs[i] = db->songs[j];
+                    db->songs[j] = temp;
+                }
+            }
+        }
+
+        break;
+    default:
+        break;
+    }
 }
